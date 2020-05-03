@@ -9,12 +9,12 @@ Service to sync photos in local directory to Google Photos and an S3 bucket, usi
 
 **macOS**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.dmg` file.
+[**Download**](https://github.com/photoupapp/app/releases/latest) the `.dmg` file.
 
 **Linux**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.AppImage` or `.deb` file.
+[**Download**](https://github.com/photoupapp/app/releases/latest) the `.AppImage` or `.deb` file.
 
 **Windows**
 
-[**Download**](https://github.com/user/repo/releases/latest) the `.exe` file.
+[**Download**](https://github.com/photoupapp/app/releases/latest) the `.exe` file.
