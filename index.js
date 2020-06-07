@@ -1,11 +1,12 @@
 'use strict';
 const path = require('path');
-const {app, BrowserWindow, Menu, Tray, ipcMain} = require('electron');
+const {app, BrowserWindow, dialog, Menu, Tray, ipcMain} = require('electron');
 /// const {autoUpdater} = require('electron-updater');
 const {is} = require('electron-util');
 const unhandled = require('electron-unhandled');
 const debug = require('electron-debug');
 const contextMenu = require('electron-context-menu');
+const store = require('electron-store');
 const menu = require('./menu');
 const log4js = require('log4js');
 
@@ -21,6 +22,13 @@ app.allowRendererProcessReuse = true;
 // Set up logging
 var logger = log4js.getLogger();
 logger.level = 'debug';
+
+
+// Init store
+const appStore = new store();
+if (appStore.get('settings.album_path') == '') {
+  appStore.set('settings.album_path', '');
+}
 
 
 let tray = null
@@ -77,6 +85,28 @@ ipcMain.on('op-check-status-s3', (event, arg) => {
   event.returnValue = op.s3;
 });
 
+ipcMain.on('select-dirs', (event, arg) => {
+  const results = dialog.showOpenDialogSync(mainWindow, {
+    properties: ['openDirectory']
+  });
+  // Single selection allowed
+  if (results) {
+    event.returnValue = results[0];
+  } else {
+    event.returnValue = '';
+  }
+});
+
+ipcMain.on('get-store-value', (event, arg) => {
+	event.returnValue = appStore.get(arg);
+});
+
+ipcMain.on('set-store-value', (event, arg) => {
+  Object.keys(arg).forEach(function(key) {
+    appStore.set(key, arg[key]);
+  });
+});
+
 
 if (!is.development) {
 	const FOUR_HOURS = 1000 * 60 * 60 * 4;
@@ -99,8 +129,8 @@ const createMainWindow = async () => {
     minWidth: 1281,
     minHeight: 800,
     webPreferences: {
-      devTools: false,
-      nodeIntegration: true
+      devTools: true,
+      nodeIntegration: true,
     }
 	});
 

@@ -2,12 +2,15 @@ const {ipcRenderer} = require('electron');
 const child_process = require('child_process');
 const chokidar = require('chokidar');
 const log4js = require('log4js');
+const store = require('electron-store');
 
 
 // Set up logging
 var logger = log4js.getLogger();
 logger.level = 'debug';
 
+// Init storage
+const appStore = new store();
 
 // This function will run the rclone command for the destination
 // specified and update the OperationStatus with the progress
@@ -15,7 +18,7 @@ logger.level = 'debug';
 function runRCloneCmd(destination, callback) {
 
 		// Set args for destination
-		var args = ['-P', '--stats-one-line', 'copy', appDir]
+		var args = ['-P', '--stats-one-line', 'copy', appStore.get('settings.album_path')]
 		if (destination == 'google') {
 			args.push('GooglePhotos:album/');
 		} else {
@@ -23,7 +26,7 @@ function runRCloneCmd(destination, callback) {
 		}
 
 		// Start process
-    var child = child_process.spawn('/usr/local/bin/rclone', args, {
+    var child = child_process.spawn('rclone', args, {
         encoding: 'utf8',
         shell: true
     });
@@ -88,7 +91,7 @@ function runRClone(path) {
 }
 
 function startFSWatcher(path){
-    var watcher = chokidar.watch(path, {
+    var watcher = chokidar.watch(appStore.get('settings.album_path'), {
         persistent: true,
 				ignoreInitial: true
     });
@@ -112,5 +115,4 @@ function startFSWatcher(path){
 
 
 // Main
-const appDir = '~/albums'
-startFSWatcher(appDir)
+startFSWatcher()

@@ -98,6 +98,18 @@ button:after,
 	width: 100%
 }
 
+.input-valid {
+	border-color: rgba(9, 140, 0, 1) !important;
+}
+
+.input-invalid {
+	border-color: rgba(255, 0, 0, 1) !important;
+}
+
+.input-err {
+	color: rgba(255, 0, 0, 1) !important;
+}
+
 form .field.half {
 	width: 50%;
 	float: left;

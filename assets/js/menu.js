@@ -7,8 +7,7 @@ $('document').ready(function() {
     });
 });
 
-// Side Menu
-$('.menu-item').on('click', function (e) {
+function loadSection(e) {
   e.preventDefault();
   var page = $(this).attr('href');
   $('#wrapper').load(page, function() {
@@ -25,32 +24,11 @@ $('.menu-item').on('click', function (e) {
      }
 
   });
-});
-
-function loadStatusPage() {
-  var elem;
-  $('document').ready(function(){
-    elem = document.getElementById("googleProgressBar");
-    elem.style.width = ipcRenderer.sendSync('op-check-status-google');
-
-    elem = document.getElementById("s3ProgressBar");
-    elem.style.width = ipcRenderer.sendSync('op-check-status-s3');
-  });
 }
 
-function loadSettingsPage() {
-  console.log('test')
-  var child = child_process.spawn('/usr/local/bin/rclone', ['config', 'dump'], {
-      encoding: 'utf8',
-      shell: true
-  });
+// Side Menu
+$('.menu-item').on('click', loadSection);
 
-  child.on('error', (error) => {
-      console.log(error);
-  });
-
-  child.stdout.setEncoding('utf8');
-  child.stdout.on('data', (data) => {
-      $('#settings').val(data);
-  });
-}
+// Load section code
+const {loadStatusPage} = require("./assets/js/page-status.js" );
+const {loadSettingsPage} = require("./assets/js/page-settings.js" );
